@@ -1,0 +1,147 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-09-17 17:46+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: loginregisterwidget.php:30 loginregisterwidget.php:43
+#: loginregisterwidget.php:56
+msgid "<strong>ERROR</strong>: Invalid ReCaptcha."
+msgstr ""
+
+#: widget.php:12
+msgid "Register, Login Widget"
+msgstr ""
+
+#: widget.php:15
+msgid "Display a register form, login form and forgot password form."
+msgstr ""
+
+#: widget.php:33
+msgid "Account"
+msgstr ""
+
+#: widget.php:50 widget.php:61
+msgid "Log in"
+msgstr ""
+
+#: widget.php:52
+msgid "Register"
+msgstr ""
+
+#: widget.php:54 widget.php:114
+msgid "Lost password"
+msgstr ""
+
+#: widget.php:64 widget.php:90
+msgid "Username"
+msgstr ""
+
+#: widget.php:66
+msgid "Password"
+msgstr ""
+
+#: widget.php:71
+msgid "Remember Me"
+msgstr ""
+
+#: widget.php:87
+msgid "Register your account"
+msgstr ""
+
+#: widget.php:94
+msgid "E-mail"
+msgstr ""
+
+#: widget.php:98
+msgid "A password will be e-mailed to you."
+msgstr ""
+
+#: widget.php:101
+msgid "Registration complete. Please check your e-mail."
+msgstr ""
+
+#: widget.php:118
+msgid ""
+"Please enter your username or email address. You will receive a link to "
+"create a new password via email."
+msgstr ""
+
+#: widget.php:121
+msgid "Username or Email:"
+msgstr ""
+
+#: widget.php:127
+msgid "Check your e-mail for the confirmation link."
+msgstr ""
+
+#: widget.php:151
+msgid "Title:"
+msgstr ""
+
+#: widget.php:154
+msgid "Show login feature?"
+msgstr ""
+
+#: widget.php:156
+msgid "Show lost password feature?"
+msgstr ""
+
+#: admin/options.php:12 admin/options.php:13 admin/options.php:32
+msgid "Login, Register Widget Settings"
+msgstr ""
+
+#: admin/options.php:34
+#, php-format
+msgid ""
+"Google ReCaptcha requires at least PHP 5.3 your version is %s update your "
+"php version and try again."
+msgstr ""
+
+#: admin/options.php:37
+msgid ""
+"If you want to change the loading icon upload your icon in your current "
+"active theme folder with the exact name ajax-loader.gif If you are using a "
+"child theme upload in the child theme directory with the name ajax-loader.gif"
+msgstr ""
+
+#: admin/options.php:57
+msgid "Settings"
+msgstr ""
+
+#: admin/options.php:64
+msgid "Google ReCaptcha Secret Key"
+msgstr ""
+
+#: admin/options.php:72
+msgid "Google ReCaptcha Site key"
+msgstr ""
+
+#: admin/options.php:80
+msgid "Enable Google Recaptcha"
+msgstr ""
+
+#: admin/options.php:87
+msgid "Enable Google Recaptcha Dark Theme"
+msgstr ""
+
+#: admin/options.php:137
+msgid "Enable ReCaptcha in widget and on default wp-login.php forms"
+msgstr ""
+
+#: admin/options.php:145
+msgid "Enable Google ReCaptcha Dark Theme"
+msgstr ""
