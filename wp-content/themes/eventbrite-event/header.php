@@ -33,7 +33,7 @@
 				<?php endif; ?>
 				<a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="logo-text">
 					<h1><?php bloginfo( 'name' ); ?></h1>
-					<h5><?php bloginfo( 'description' ); ?></h5>
+					<h5><b><?php bloginfo( 'description' ); ?></b></h5>
 				</a>
 			</div>
 			<a href="#" class="menu-toggle">-</a>

@@ -11,11 +11,14 @@ get_header();
 			<div class="span8">
 				<div class="left-col">
 	<?php
+
 	if ( have_posts() ) : while( have_posts() ) : the_post();
 			get_template_part( 'tmpl/post-loop' );
 			wp_link_pages( array( ) );
 			?>
+
 			<div class="pagination pagination-centered">
+ 
 				<ul>
 					<?php previous_post_link( '<li class="nav-previous">%link</li>', ' %title' ); ?>
 					<?php next_post_link( '<li class="nav-next">%link</li>', '%title ' ); ?>

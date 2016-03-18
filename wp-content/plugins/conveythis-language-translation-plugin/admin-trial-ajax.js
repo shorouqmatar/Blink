@@ -1,0 +1,2 @@
+jQuery(document).ready(function(){var a=!0;jQuery("#conveythis-settings").on("submit",function(b){a&&(0===jQuery("#free_trial").length||jQuery("#free_trial").prop("checked"))&&(b.preventDefault(),jQuery.ajax({url:"http://www.conveythis.com/ajax/wordpress_trial.php",crossDomain:!0,data:{url:jQuery("#conveythis_trial_url").val()},type:"POST",complete:function(a,b,c){response=jQuery.parseJSON(a.responseText);jQuery("#conveythis_trial_key").val(response.key);jQuery(".conveythis_trial_expires").val(response.expires_human);
+jQuery("#conveythis-settings").submit()}}));a=!1})});

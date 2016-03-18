@@ -15,8 +15,8 @@
 				'fallback_cb'     => '__return_false'
 			) ); ?>
 		<p>
-			<a class="wordpress-link" href="http://wordpress.org/" rel="generator"><?php _e( 'Proudly powered by WordPress', 'eventbrite-event' ); ?></a>
-			<?php printf( __( 'Theme: %1$s by %2$s.', 'eventbrite-event' ), 'Eventbrite Single Event', '<a href="http://voceplatforms.com/" rel="designer" class="designer-link">Voce Platforms</a>' ); ?>
+			<a class="wordpress-link" href="http://wordpress.org/" rel="generator"><?php _e( '&copy; Copyright for NT team Work', 'eventbrite-event' ); ?></a>
+			<?php printf( __( 'Theme: %1$s by %2$s.', '' ), '', '<!--<a href="http://voceplatforms.com/" rel="designer" class="designer-link">Voce Platforms</a>-->' ); ?>
 		</p>
 	</div>
 </footer>
