@@ -188,7 +188,7 @@ class Book_Review_Book_Info {
    *
    * @since    2.3.0
    *
-   * @param    string    $post_id    ID of the current post.
+   * @param    string    $post_id    ID of the current post
    */
   public function get_book_review_field( $post_id, $field_id ) {
     $field = get_post_meta( $post_id, $field_id, true );
@@ -197,11 +197,164 @@ class Book_Review_Book_Info {
   }
 
   /**
+   * Retrieve the site link.
+   *
+   * @since    2.3.4
+   *
+   * @param    string    $post_id    ID of the current post
+   * @param    string    $site_id    ID of the current site
+   */
+  public function get_book_review_site_link( $post_id, $site_id ) {
+    $site_link = get_post_meta( $post_id, $site_id, true );
+
+    return apply_filters( 'book_review_site_link', $site_link, $post_id, $site_id );
+  }
+
+  /**
+   * Retrieve the links.
+   *
+   * @since    2.3.4
+   *
+   * @param    string    $post_id    ID of the current post
+   *
+   * @return   array    Array containing the HTML for each site link
+   */
+  public function get_book_review_site_link_html( $post_id ) {
+    $links_option = $this->settings->get_book_review_links_option();
+    $html = array();
+
+    // Iterate over all of the site links.
+    foreach ( $links_option['sites'] as $site_id => $site_values ) {
+      // Check if the site link is active.
+      if ( $site_values['active'] === '1' ) {
+        $link_url = $this->get_book_review_site_link( $post_id, $site_id );
+        $type = $site_values['type'];
+        $image_url = $site_values['url'];
+        $target = $this->get_link_target();
+
+        // Create the link.
+        if ( !empty( $link_url ) ) {
+          if ( $type === 'button' ) {
+            array_push( $html, $this->get_button_site_link( $site_id, $site_values['text'], $link_url, $target ) );
+          }
+          else if ( $type === 'text' ) {
+            array_push( $html, $this->get_text_site_link( $site_id, $site_values['text'], $link_url, $target ) );
+          }
+          else if ( $type == 'custom' ) {
+            array_push( $html, $this->get_custom_site_link( $site_id, $site_values['text'], $link_url, $image_url, $target ) );
+          }
+        }
+      }
+    }
+
+    return apply_filters( 'book_review_site_links', $html, $post_id, $links_option );
+  }
+
+  /**
+   * Get the HTML for a site link button.
+   *
+   * @since    2.3.4
+   *
+   * @param    string    $site_id    ID of the current site
+   * @param    string    $text       Site link text
+   * @param    string    $url        Site link URL
+   * @param    string    $target     Target attribute of the site link
+   *
+   * @return   string   HTML for the site link button
+   */
+  private function get_button_site_link( $site_id, $text, $url, $target ) {
+    $anchor = '<a class="custom-link" href="'
+              . esc_url( $url )
+              . '"'
+              . $target
+              . '>';
+
+    $img = '<img src="'
+          . esc_url( $this->get_button_site_link_url ( $site_id ) )
+          . '" alt="'
+          . esc_attr( $text )
+          . '">';
+
+    return $anchor . $img . '</a>';
+  }
+
+  /**
+   * Get the URL for a site link button.
+   *
+   * @since    2.3.4
+   *
+   * @param    string    $site_id    'book_review_goodreads'|'book_review_barnes_noble'
+   *
+   * @return   string   URL for the site link button
+   */
+  private function get_button_site_link_url( $site_id ) {
+    $base_url = plugin_dir_url( __DIR__ ) . 'includes/images/';
+
+    if ( $site_id === 'book_review_goodreads' ) {
+      return $base_url . 'goodreads.png';
+    }
+    else if ( $site_id === 'book_review_barnes_noble' ) {
+      return $base_url . 'barnes-noble.png';
+    }
+  }
+
+  /**
+   * Get the HTML for a plain text site link.
+   *
+   * @since    2.3.4
+   *
+   * @param    string    $site_id    'book_review_goodreads'|'book_review_barnes_noble'
+   * @param    string    $text       Site link text
+   * @param    string    $url        Site link URL
+   * @param    string    $target     Target attribute of the site link
+   *
+   * @return   string   HTML for the plain text site link
+   */
+  private function get_text_site_link( $site_id, $text, $url, $target ) {
+    $anchor = '<a class="custom-link" href="'
+              . esc_url( $url )
+              . '"'
+              . $target
+              . '>';
+
+    return $anchor . esc_html( $text ) . '</a>';
+  }
+
+  /**
+   * Get the HTML for a custom image site link.
+   *
+   * @since    2.3.4
+   *
+   * @param    string    $site_id    'book_review_goodreads'|'book_review_barnes_noble'
+   * @param    string    $text       Site link text
+   * @param    string    $link_url   Site link URL
+   * @param    string    $link_url   Custom image URL
+   * @param    string    $target     Target attribute of the site link
+   *
+   * @return   string   HTML for the custom image site link
+   */
+  private function get_custom_site_link( $site_id, $text, $link_url, $image_url, $target ) {
+    $anchor = '<a class="custom-link" href="'
+              . esc_url( $link_url )
+              . '"'
+              . $target
+              . '>';
+
+    $img = '<img src="'
+          . esc_url( $image_url )
+          . '" alt="'
+          . esc_attr( $text )
+          . '">';
+
+    return $anchor . $img . '</a>';
+  }
+
+  /**
    * Retrieve the links meta that displays in the Book Info meta box.
    *
    * @since    2.3.1
    *
-   * @param    string    $post_id    ID of the current post.
+   * @param    string    $post_id    ID of the current post
    */
   public function get_book_review_links_meta( $post_id ) {
     global $wpdb;
@@ -259,7 +412,7 @@ class Book_Review_Book_Info {
   private function get_link_target() {
     $links_option = $this->settings->get_book_review_links_option();
 
-    if ( $links_option['book_review_target'] == '1' ) {
+    if ( $links_option['book_review_target'] === '1' ) {
       return ' target="_blank"';
     }
 

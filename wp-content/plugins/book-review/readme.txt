@@ -5,7 +5,7 @@ Author URI: http://wpreviewplugins.com/
 Plugin URI: http://wpreviewplugins.com/product/book-review/
 Requires at least: 3.5
 Tested up to: 4.4.2
-Stable tag: 2.3.3
+Stable tag: 2.3.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -48,6 +48,7 @@ This plugin supports the following translations (with credit to the translators)
 * Indonesian (Ardhi Sulaeman)
 * Italian (James Garofalo)
 * Norwegian (Harald Indgul)
+* Portuguese (Wilson Rocha)
 * Russian (Alexander Wolf)
 * Serbian ([Ogi Djuraskovic](http://firstsiteguide.com/))
 * Spanish (Jose Luis Parra)
@@ -116,6 +117,11 @@ The *Synopsis* field is meant to hold the summary or description of the book. It
 10. Google Search Result
 
 == Changelog ==
+
+= 2.3.4 =
+* New: Add *Site Links* section to the *Links* settings tab to facilitate adding Goodreads and/or Barnes & Noble links.
+* Tweak: Optimize Javascript and CSS files.
+* Fix: Fix an issue where the review box could potentially be shown in undesirable locations.
 
 = 2.3.3 =
 * Tweak: Updated error message when retrieving book info.

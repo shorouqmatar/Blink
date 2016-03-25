@@ -207,8 +207,20 @@
   </div>
   <?php endif; ?>
 
-  <!-- Links -->
   <ul id="book-review-links" class="links">
+    <!-- Site Links -->
+    <?php
+      $site_links = $this->book_info->get_book_review_site_link_html( $post_id );
+
+      foreach ( $site_links as $site_link ): ?>
+    <li>
+    <?php
+        echo $site_link;
+      endforeach;
+    ?>
+    </li>
+
+    <!-- Custom Links -->
     <?php
       $links = $this->book_info->get_book_review_links_html( $post_id );
 

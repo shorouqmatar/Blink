@@ -91,7 +91,7 @@ class Book_Review {
    */
   private function __construct() {
     $this->plugin_name = 'book-review';
-    $this->version = '2.3.3';
+    $this->version = '2.3.4';
 
     if ( !defined( 'BOOK_REVIEW_PLUGIN_DIR' ) ) {
       define( 'BOOK_REVIEW_PLUGIN_DIR', plugin_dir_path( dirname( __FILE__ ) ) );
@@ -258,12 +258,22 @@ class Book_Review {
     $this->loader->add_filter( 'sanitize_book_review_rating_image4', $plugin_admin, 'sanitize_rating_image', 10, 3 );
     $this->loader->add_filter( 'sanitize_book_review_rating_image5', $plugin_admin, 'sanitize_rating_image', 10, 3 );
 
-    $this->loader->add_filter( 'sanitize_book_review_target', $plugin_admin, 'sanitize_checkbox' );
+    // Site Links
+    $this->loader->add_filter( 'sanitize_book_review_site_link_active', $plugin_admin, 'sanitize_checkbox' );
+    $this->loader->add_filter( 'sanitize_book_review_site_link_type', $plugin_admin, 'sanitize_link_type' );
+    $this->loader->add_filter( 'sanitize_book_review_site_link_text', $plugin_admin, 'sanitize_text' );
+    $this->loader->add_filter( 'sanitize_book_review_site_link_url', $plugin_admin, 'sanitize_url' );
+
+    // Custom Links
     $this->loader->add_filter( 'sanitize_book_review_link_id', $plugin_admin, 'sanitize_link_id' );
     $this->loader->add_filter( 'sanitize_book_review_link_text', $plugin_admin, 'sanitize_link_text' );
     $this->loader->add_filter( 'sanitize_book_review_link_url', $plugin_admin, 'sanitize_url' );
     $this->loader->add_filter( 'sanitize_book_review_link_status', $plugin_admin, 'sanitize_link_status' );
 
+    // Links - General
+    $this->loader->add_filter( 'sanitize_book_review_target', $plugin_admin, 'sanitize_checkbox' );
+
+    // Custom Fields
     $this->loader->add_filter( 'sanitize_book_review_custom_field', $plugin_admin, 'sanitize_text' );
 
     $this->loader->add_filter( 'sanitize_book_review_api_key', $plugin_admin, 'sanitize_text' );

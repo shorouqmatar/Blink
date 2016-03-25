@@ -108,18 +108,18 @@ class Book_Review_Admin {
 
       // Check that this is the Posts admin page.
       if ( $screen->post_type == 'post' ) {
-        wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/book-review-posts-admin.css', array(), $this->version, 'all' );
+        wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/book-review-posts-admin.min.css', array(), $this->version, 'all' );
       }
     }
     else if ( $hook_suffix == 'post-new.php' || $hook_suffix == 'post.php' ) {
-      wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/book-review-meta-box.css', array(), $this->version, 'all' );
+      wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/book-review-meta-box.min.css', array(), $this->version, 'all' );
     }
     else if ( $hook_suffix == 'plugins.php' ) {
-      wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/book-review-admin-notice.css', array(), $this->version, 'all' );
+      wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/book-review-admin-notice.min.css', array(), $this->version, 'all' );
     }
     else if ( $hook_suffix == $this->plugin_screen_hook_suffix ) {
       wp_enqueue_style( 'wp-color-picker' );
-      wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/book-review-admin.css', array(), $this->version, 'all' );
+      wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/book-review-admin.min.css', array(), $this->version, 'all' );
     }
   }
 
@@ -131,23 +131,15 @@ class Book_Review_Admin {
    * @param    string    $hook_suffix    Page hook.
    */
   public function enqueue_scripts( $hook_suffix ) {
-    /**
-     * An instance of this class should be passed to the run() function
-     * defined in Book_Review_Loader as all of the hooks are defined
-     * in that particular class.
-     *
-     * The Book_Review_Loader will then create the relationship
-     * between the defined hooks and the functions defined in this
-     * class.
-     */
     if ( !isset( $this->plugin_screen_hook_suffix ) ) {
       return;
     }
 
     if ( $hook_suffix == 'post-new.php' || $hook_suffix == 'post.php' ) {
-      wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/book-review-admin-meta-box.js', array( 'jquery' ), $this->version, false );
+      wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/book-review-meta-box.min.js', array( 'jquery' ), $this->version, false );
       wp_enqueue_script( 'jquery-ui-spinner' );
 
+      // Surface translations for Javascript to use.
       $translation_array = array(
         'no_isbn' => esc_html__( 'Please enter an ISBN.', $this->plugin_name ),
         'not_found' => esc_html__( 'A book with this ISBN was not found in the Google Books database.', $this->plugin_name ),
@@ -155,9 +147,25 @@ class Book_Review_Admin {
       wp_localize_script( $this->plugin_name, 'book_review_google_api', $translation_array );
     }
     else if ( $hook_suffix == $this->plugin_screen_hook_suffix ) {
-       wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/book-review-admin.js',
+      wp_enqueue_media();
+
+      wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/book-review-settings.min.js',
         array( 'jquery', 'wp-color-picker' ), $this->version, false );
-       wp_enqueue_script( 'jquery-ui-sortable' );
+
+      wp_enqueue_script( 'jquery-ui-sortable' );
+
+      // Surface translations for Javascript to use.
+      $media_uploader_translations = array(
+        'title' => esc_html__( 'Custom Image', $this->plugin_name ),
+        'button_text' => esc_html__( 'Set Custom Image', $this->plugin_name )
+      );
+
+      $custom_fields_translations = array(
+        'placeholder_text' => esc_html__( 'Field Name (e.g. Illustrator)', $this->plugin_name )
+      );
+
+      wp_localize_script( $this->plugin_name, 'media_uploader', $media_uploader_translations );
+      wp_localize_script( $this->plugin_name, 'custom_fields', $custom_fields_translations );
     }
   }
 
@@ -555,6 +563,7 @@ class Book_Review_Admin {
       );
 
       // Return previous value.
+      // Don't save "custom" as type.
       return isset( $ratings_option[$option] ) ? $ratings_option[$option] : '';
     }
 
@@ -568,9 +577,10 @@ class Book_Review_Admin {
    */
   public function save_links( $input = array() ) {
     $output = array();
+    $is_custom = false;
+    $show_error = false;
 
     foreach ( $input as $key => $value ) {
-      // Links
       if ( is_array( $value ) ) {
         $id = '';
         $text = '';
@@ -578,33 +588,139 @@ class Book_Review_Admin {
         $active = 0;
 
         foreach ( $value as $link_key => $link_value ) {
-          if ( $link_key == 'id' ) {
-            $id = apply_filters( 'sanitize_book_review_link_id', $link_value );
+          // Site Links
+          if ( is_array( $link_value ) ) {
+            foreach ( $link_value as $site_key => $site_value ) {
+              $type = null;
+              $active = null;
+
+              switch ( $site_key ) {
+                case 'active':
+                  $active = apply_filters( 'sanitize_book_review_site_link_active', $site_value );
+                  $output[$key][$link_key][$site_key] = $active;
+
+                  break;
+                case 'type':
+                  $type = apply_filters( 'sanitize_book_review_site_link_type', $site_value );
+                  $output[$key][$link_key][$site_key] = $type;
+
+                  break;
+                case 'text':
+                  $output[$key][$link_key][$site_key] = apply_filters( 'sanitize_book_review_site_link_text', $site_value );
+
+                  break;
+                case 'url':
+                  // Set active if it has not already been set.
+                  if ( is_null( $active ) && ( array_key_exists( 'active', $input[$key][$link_key] ) ) ) {
+                    $active = apply_filters( 'sanitize_book_review_site_link_active', $input[$key][$link_key]['active'] );
+                  }
+
+                  // Set link type if it has not already been set.
+                  if ( is_null( $type ) && ( array_key_exists( 'type', $input[$key][$link_key] ) ) ) {
+                    $type = apply_filters( 'sanitize_book_review_site_link_type', $input[$key][$link_key]['type'] );
+                  }
+
+                  $sanitized_url = apply_filters( 'sanitize_book_review_site_link_url', $site_value );
+                  $output[$key][$link_key][$site_key] = $sanitized_url;
+
+                  // Save previous link type if URL is empty.
+                  if ( ( $type === 'custom' ) && ( $sanitized_url === '' ) ) {
+                    $links_option = $this->settings->get_book_review_links_option( false );
+                    $old_type = isset( $links_option[$key][$link_key]['type'] ) ? $links_option[$key][$link_key]['type'] : 'button';
+                    $output[$key][$link_key]['type'] = $old_type;
+
+                    // Save previous URL if previous type is 'custom'.
+                    if ( $old_type === 'custom' ) {
+                      $output[$key][$link_key][$site_key] = isset( $links_option[$key][$link_key][$site_key] ) ?
+                        $links_option[$key][$link_key][$site_key] : '';
+                    }
+                  }
+
+                  if ( ( $active === '1') && ( $type === 'custom' ) && ( $sanitized_url === '' ) ) {
+                    $show_error = true;
+                  }
+
+                  break;
+              }
+            }
           }
-          else if ( $link_key == 'text' ) {
-            $text = apply_filters( 'sanitize_book_review_link_text', $link_value );
-          }
-          else if ( $link_key == 'image' ) {
-            $url = apply_filters( 'sanitize_book_review_link_url', $link_value );
-          }
-          else if ( $link_key == 'active' ) {
-            $active = apply_filters( 'sanitize_book_review_link_status', $link_value );
+          // Custom Links
+          else {
+            $is_custom = true;
+
+            if ( $link_key == 'id' ) {
+              $id = apply_filters( 'sanitize_book_review_link_id', $link_value );
+            }
+            else if ( $link_key == 'text' ) {
+              $text = apply_filters( 'sanitize_book_review_link_text', $link_value );
+            }
+            else if ( $link_key == 'image' ) {
+              $url = apply_filters( 'sanitize_book_review_link_url', $link_value );
+            }
+            else if ( $link_key == 'active' ) {
+              $active = apply_filters( 'sanitize_book_review_link_status', $link_value );
+            }
           }
         }
 
-        $this->save_link( $id, $text, $url, $active );
+        if ( $is_custom ) {
+          $this->save_link( $id, $text, $url, $active );
+        }
       }
+      // Link Target
       else {
         $output[$key] = apply_filters( 'sanitize_' . $key, $value );
       }
     }
 
-    // Save unchecked checkbox as it will not be POSTed.
+    // Show any errors. Do this check here to prevent showing the same error multiple times.
+    if ( $show_error ) {
+      add_settings_error(
+        'book_review_links',
+        'custom-image-error',
+        esc_html__( 'Oops! Looks like Custom Image is missing a URL.', $this->plugin_name )
+      );
+    }
+
+    // Save unchecked checkboxes as they will not be POSTed.
     if ( !array_key_exists( 'book_review_target', $output ) ) {
       $output['book_review_target'] = apply_filters( 'sanitize_book_review_target', '' );
     }
 
+    if ( array_key_exists( 'sites', $output ) ) {
+      // Goodreads
+      if ( array_key_exists( 'book_review_goodreads', $output['sites'] ) ) {
+        if ( !array_key_exists( 'active', $output['sites']['book_review_goodreads'] ) ) {
+          $output['sites']['book_review_goodreads']['active'] = apply_filters( 'sanitize_book_review_site_link_active', '' );
+        }
+      }
+
+      // Amazon
+      if ( array_key_exists( 'book_review_barnes_noble', $output['sites'] ) ) {
+        if ( !array_key_exists( 'active', $output['sites']['book_review_barnes_noble'] ) ) {
+          $output['sites']['book_review_barnes_noble']['active'] = apply_filters( 'sanitize_book_review_site_link_active', '' );
+        }
+      }
+    }
+
     return $output;
+  }
+
+  /**
+   * Sanitize link type.
+   *
+   * @since    2.3.4
+   * @param    string       $type      Unsanitized link type
+   * @return   int                     Sanitized link type|'button' if invalid
+   */
+  public function sanitize_link_type( $type ) {
+    $allowed_types = array( 'button', 'text', 'custom' );
+
+    if ( in_array( $type, $allowed_types ) ) {
+      return $type;
+    }
+
+    return 'button';
   }
 
   /**

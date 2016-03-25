@@ -61,7 +61,7 @@ class Book_Review_Public {
    * @since    1.0.0
    */
   public function enqueue_styles() {
-    wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/book-review-public.css',
+    wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/book-review-public.min.css',
       array(), $this->version, 'all' );
   }
 
@@ -75,41 +75,43 @@ class Book_Review_Public {
    * @return   string   Revised content of the post.
    */
   public function display_book_info( $content ) {
-    $post_id = get_the_ID();
-    $title = $this->book_info->get_book_review_title( $post_id );
+    if ( is_main_query() && in_the_loop() ) {
+      $post_id = get_the_ID();
+      $title = $this->book_info->get_book_review_title( $post_id );
 
-    // Title is a required field.
-    if ( !empty( $title ) ) {
-      $show = false;
-      $general_option = $this->settings->get_book_review_general_option();
+      // Title is a required field.
+      if ( !empty( $title ) ) {
+        $show = false;
+        $general_option = $this->settings->get_book_review_general_option();
 
-      // Post Types
-      $post_types = $general_option['book_review_post_types'];
-      $current_post_type = get_post_type( $post_id );
+        // Post Types
+        $post_types = $general_option['book_review_post_types'];
+        $current_post_type = get_post_type( $post_id );
 
-      // To maintain backwards compatibility, show the book info for custom post types that have not
-      // been saved in the settings yet.
-      if ( !isset( $post_types[$current_post_type] ) ) {
-        $show = true;
-      }
-      // Check if current post type has been selected in settings.
-      else if ( $post_types[$current_post_type] == '1' ) {
-        $show = true;
-      }
-
-      // Show the review box.
-      if ( $show ) {
-        ob_start();
-        include( 'partials/book-review-public.php' );
-
-        $content = '<div itemprop="reviewBody">' . $content . '</div>';
-
-        // Review Box Position
-        if ( $general_option['book_review_box_position'] === 'top' ) {
-          $content = ob_get_clean() . $content;
+        // To maintain backwards compatibility, show the book info for custom post types that have not
+        // been saved in the settings yet.
+        if ( !isset( $post_types[$current_post_type] ) ) {
+          $show = true;
         }
-        else if ( $general_option['book_review_box_position'] === 'bottom' ) {
-          $content = $content . ob_get_clean();
+        // Check if current post type has been selected in settings.
+        else if ( $post_types[$current_post_type] == '1' ) {
+          $show = true;
+        }
+
+        // Show the review box.
+        if ( $show ) {
+          ob_start();
+          include( 'partials/book-review-public.php' );
+
+          $content = '<div itemprop="reviewBody">' . $content . '</div>';
+
+          // Review Box Position
+          if ( $general_option['book_review_box_position'] === 'top' ) {
+            $content = ob_get_clean() . $content;
+          }
+          else if ( $general_option['book_review_box_position'] === 'bottom' ) {
+            $content = $content . ob_get_clean();
+          }
         }
       }
     }

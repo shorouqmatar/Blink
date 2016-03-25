@@ -128,6 +128,25 @@
     endforeach;
   ?>
 
+  <!-- Site Links -->
+  <?php
+    $site_links = $this->settings->get_book_review_links_option();
+
+    foreach ( $site_links['sites'] as $site_id => $site_values ):
+      if ( ( isset( $site_values['active'] ) && ( $site_values['active'] === '1' ) ) ):
+  ?>
+  <div class="row">
+    <label for="<?php echo esc_attr( $site_id ); ?>">
+      <?php echo esc_html( $site_values['text'] ) ?>:
+    </label>
+    <input id="<?php echo esc_attr( $site_id ); ?>"
+      name="<?php echo "book_review_sites[" . esc_attr( $site_id ) . "]"; ?>" type="text"
+      value="<?php echo esc_attr( $this->book_info->get_book_review_site_link( $post->ID, $site_id ) ); ?>">
+  </div>
+  <?php
+      endif;
+    endforeach; ?>
+
   <!-- Links -->
   <?php
     $links = $this->book_info->get_book_review_links_meta( $post->ID );

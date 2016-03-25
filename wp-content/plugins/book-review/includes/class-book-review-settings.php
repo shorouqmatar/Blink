@@ -103,12 +103,30 @@ class Book_Review_Settings {
    *
    * @return   array    Array of links settings.
    */
-  public function get_book_review_links_option() {
-    $defaults = array(
-      'book_review_target' => ''
-    );
+  public function get_book_review_links_option( $use_defaults = true ) {
     $settings = get_option( 'book_review_links' );
-    $settings = wp_parse_args( $settings, $defaults );
+
+    if ( $use_defaults ) {
+      $defaults = array(
+        'book_review_target' => '',
+        'sites' => array(
+          'book_review_goodreads' => array(
+            'type' => 'button',
+            'text' => 'Goodreads',
+            'url' => '',
+            'active' => '0'
+          ),
+          'book_review_barnes_noble' => array(
+            'type' => 'button',
+            'text' => 'Barnes & Noble',
+            'url' => '',
+            'active' => '0'
+          )
+        )
+      );
+
+      $settings = wp_parse_args( $settings, $defaults );
+    }
 
     return apply_filters( 'book_review_links_option', $settings );
   }

@@ -334,6 +334,13 @@ class Book_Review_Meta_Box {
         }
       }
 
+      // Save site links.
+      if ( isset( $_POST['book_review_sites'] ) ) {
+        foreach ( $_POST['book_review_sites'] as $key => $value ) {
+          $this->save_url_field( $post_id, $key, $value );
+        }
+      }
+
       // For every entry in the custom_links table, save an entry to the custom_link_urls table.
       $sql = "SELECT custom_link_id FROM {$wpdb->book_review_custom_links} WHERE active = 1";
       $results = $wpdb->get_results( $sql );
